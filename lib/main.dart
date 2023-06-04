@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc_exercise/modules/home_page/bloc/home_page_bloc.dart';
+import 'package:flutter_bloc_exercise/modules/home_page/repositories/home_page_repo.dart';
+import 'package:flutter_bloc_exercise/network/api_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'modules/home_page/screen/home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  final HomePageRepository homePageRepository = HomePageRepositoryImpl();
+  runApp(MyApp(
+      homePageBloc: HomePageBloc(homePageRepository: homePageRepository)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final HomePageBloc homePageBloc;
+
+  const MyApp({super.key, required this.homePageBloc});
 
   // This widget is the root of your application.
   @override
@@ -26,7 +34,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: BlocProvider<HomePageBloc>(
+        create: (context) => homePageBloc,
+        child: HomePage(homePageBloc: homePageBloc,),
+      ),
     );
   }
 }
